@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FitnessCoach Chatbot</title>
+</head>
+<body>
+    <h1>Fitness Coach Chatbot</h1>
+    <form onsubmit="fitnessCoach(); return false;">
+
+<label for="hello">Ask Here:</label><br>
+<input type="text" name="Query" id="hello" placeholder="Type your que here"/>
+
+<button type="submit">Send</button>
+    </form>
+    <div></div>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script>
+    function fitnessCoach(){
+
+let Question=document.querySelector("#hello").value;
+console.log(Question);
+let div=document.querySelector("div");
+div.innerHTML=`<p>Thinking plz wait</p>`;
+ const Result=axios.post(
+ "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent",
+ {
+    contents: [
+      {
+        parts: [
+          {
+            text:`You are a fitness trainer AI. Only answer about exercises, workouts, fitness tips. 
+If asked about other topics, say: "I'm a fitness coach, ask me about workouts and health!" 
+Question:${Question}`
+          },
+        ],
+      },
+    ],
+  },
+
+  {
+    headers:{
+"Content-Type":"application/json",
+"x-goog-api-key":"AIzaSyAXlrsGjKL9dNLAhhofbO2r9YKabo9bcEM"
+},
+});
+
+Result
+.then((data)=>{
+ const Answer=data.data.candidates[0].content.parts[0].text;
+ div.innerHTML=`<p>${Answer}<p/>`;
+ console.log(data);
+
+})
+
+.catch((error)=>{
+ 
+div.innerHTML=`<p>Sorry there was an error please try again`;
+console.log(error);
+})
+}
+</script>
+</body>
+</html>
